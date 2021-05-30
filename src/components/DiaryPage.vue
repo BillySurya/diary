@@ -1,11 +1,11 @@
 <template>
   <div v-if="!loading">
     <div v-for="(list, listKey, idx) in listData" :key="idx">
-      <h2>{{ listKey }}</h2>
+      <h2>{{ Number(listKey) | moment('DD MMMM') }}</h2>
       <div v-for="(item, itemIdx) in list" :key="itemIdx">
-        <span>{{ item.created_at }} </span>
+        <span>{{ item.created_at | moment('HH:mm') }} </span>
         <span>{{ item.name }} </span>
-        <span>{{ item.cost }}</span>
+        <span>{{ item.cost | formatRupiah }}</span>
       </div>
       <br />
     </div>
@@ -14,12 +14,14 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { formatRupiah } from  "../shared/utils";
 
 export default {
   name: "DairyPage",
   props: {
     msg: String,
   },
+  filters: {formatRupiah},
   data() {
     return {
       listData: {},
@@ -42,9 +44,9 @@ export default {
           this.listData[dateTimeItem[0]] = [];
         this.listData[dateTimeItem[0]].push(el);
       });
-
       this.loading = Object.keys(this.listData).length ? false : true
-    }
+    },
+    formatRupiah
   },
   created() {
     this.getItemList();
