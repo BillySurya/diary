@@ -38,13 +38,25 @@ export default {
       getItemList: "getItemList",
     }),
     reformatData(item) {
-      item.forEach((el) => {
+      let diaryListData = [...item];
+      let _data = {};
+      diaryListData.sort((a,b) => new Date(b['created_at']).getTime() - new Date(a['created_at']).getTime());
+
+      diaryListData.forEach((el) => {
         let dateTimeItem = el.created_at.split(" ");
-        if (!Object.prototype.hasOwnProperty.call(this.listData, dateTimeItem[0]))
-          this.listData[dateTimeItem[0]] = [];
-        this.listData[dateTimeItem[0]].push(el);
+        let dateMillis = new Date(dateTimeItem[0]).getTime();
+        if (!Object.prototype.hasOwnProperty.call(_data, dateMillis))
+          _data[dateMillis] = [];
+
+        _data[dateMillis].push(el);
       });
-      this.loading = Object.keys(this.listData).length ? false : true
+
+      Object.keys(_data).forEach(i=>{
+        _data[i].sort((a,b) => new Date(a['created_at']).getTime() - new Date(b['created_at']).getTime());
+      })
+
+      this.listData = _data;
+      this.loading = Object.keys(this.listData).length ? false : true;
     },
     formatRupiah
   },
