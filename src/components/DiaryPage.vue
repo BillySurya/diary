@@ -7,6 +7,9 @@
         <span>{{ item.name }} </span>
         <span>{{ item.cost | formatRupiah }}</span>
       </div>
+      <div>
+        Total {{ totalCostItemPerDay[listKey] | formatRupiah }}
+      </div>
       <br />
     </div>
   </div>
@@ -26,6 +29,7 @@ export default {
     return {
       listData: {},
       loading: true,
+      totalCostItemPerDay: {},
     };
   },
   computed: {
@@ -58,6 +62,11 @@ export default {
       this.listData = _data;
       this.loading = Object.keys(this.listData).length ? false : true;
     },
+    getTotalCost() {
+      Object.keys(this.listData).forEach((key) => {
+        this.totalCostItemPerDay[key] = this.listData[key].reduce((n, {cost}) => n + cost, 0);
+      });
+    },
     formatRupiah
   },
   created() {
@@ -67,7 +76,11 @@ export default {
      itemList: {
       deep: true,
       handler(res) {
-        res.data ? this.reformatData(res.data) : false
+        if(res.data) {
+          this.reformatData(res.data);
+          this.getTotalCost();
+        }
+        return false
       }
     }
   }
