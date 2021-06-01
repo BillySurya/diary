@@ -23,21 +23,29 @@
         <br />
       </div>
     </div>
+    <diary-modal
+      v-show="showModal"
+      @close="closeModal"
+    >
+    </diary-modal>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { formatRupiah } from  "../shared/utils";
+import { formatRupiah } from "../shared/utils";
+import DiaryModal from "./DiaryModal"
 
 export default {
   name: "DairyPage",
   props: {
     msg: String,
   },
+  components: {DiaryModal},
   filters: {formatRupiah},
   data() {
     return {
+      showModal: false,
       listData: {},
       loading: true,
       totalCostItemPerDay: {},
@@ -86,7 +94,10 @@ export default {
 
       return totalCost
     },
-    formatRupiah
+    closeModal() {
+      this.showModal = false
+    },
+    formatRupiah,
   },
   created() {
     this.getItemList();
