@@ -1,16 +1,27 @@
 <template>
   <div v-if="!loading">
-    <div v-for="(list, listKey, idx) in listData" :key="idx">
-      <h2>{{ Number(listKey) | moment('DD MMMM') }}</h2>
-      <div v-for="(item, itemIdx) in list" :key="itemIdx">
-        <span>{{ item.created_at | moment('HH:mm') }} </span>
-        <span>{{ item.name }} </span>
-        <span>{{ item.cost | formatRupiah }}</span>
-      </div>
+    <div>
+      <span>Diari Jajan Bulan {{ itemList.data[0].created_at | moment('MM')}} 2021</span>
+      <small>Pengeluaran Bulan Ini {{ calculateTotalCostPerMonth() | formatRupiah }} </small>
       <div>
-        Total {{ totalCostItemPerDay[listKey] | formatRupiah }}
+        <button @click="showModal = true">TAMBAH ITEM</button>
       </div>
-      <br />
+    </div>
+    <div>
+      <div v-for="(list, listKey, idx) in listData"  :key="idx">
+        <div>
+          <b>{{ Number(listKey) | moment("DD MMMM") }}</b>
+        </div>
+        <div v-for="(item, itemIdx) in list" :key="itemIdx">
+          <span>{{ item.created_at | moment("HH:mm") }} </span>
+          <span>{{ item.name }} </span>
+          <span>{{ item.cost | formatRupiah }}</span>
+        </div>
+        <div>
+          <b> Total {{ totalCostItemPerDay[listKey] | formatRupiah }} </b>
+        </div>
+        <br />
+      </div>
     </div>
   </div>
 </template>
@@ -66,6 +77,14 @@ export default {
       Object.keys(this.listData).forEach((key) => {
         this.totalCostItemPerDay[key] = this.listData[key].reduce((n, {cost}) => n + cost, 0);
       });
+    },
+    calculateTotalCostPerMonth () {
+      let totalCost = 0;
+      Object.keys(this.totalCostItemPerDay).forEach((key) => {
+        totalCost += this.totalCostItemPerDay[key]
+      });
+
+      return totalCost
     },
     formatRupiah
   },
