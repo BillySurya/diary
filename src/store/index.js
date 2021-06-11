@@ -15,11 +15,19 @@ export default new Vuex.Store({
     setItemData(state, item) {
       Vue.set(state.item, 'data', item);
     },
+    setAddedItem(state, response) {
+      state.item.data.push(response);
+    },
   },
   actions: {
     getItemList({ commit }) {
       axios.get("http://localhost:3000/items").then((res) => {
         commit("setItemData", res.data);
+      });
+    },
+    addDiary({ commit }, params) {
+      axios.post("http://localhost:3000/items", params).then((res) => {
+        commit("setAddedItem", res.data);
       });
     },
   },

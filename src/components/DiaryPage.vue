@@ -26,6 +26,7 @@
     <diary-modal
       v-show="showModal"
       @close="closeModal"
+      @submit="submitDiary"
     >
     </diary-modal>
   </div>
@@ -35,6 +36,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { formatRupiah } from "../shared/utils";
 import DiaryModal from "./DiaryModal"
+import moment from "moment";
 
 export default {
   name: "DairyPage",
@@ -59,6 +61,7 @@ export default {
   methods: {
     ...mapActions({
       getItemList: "getItemList",
+      addDiary: "addDiary",
     }),
     reformatData(item) {
       let diaryListData = [...item];
@@ -96,6 +99,14 @@ export default {
     },
     closeModal() {
       this.showModal = false
+    },
+    submitDiary(data) {
+      let params = {
+        name: data.name,
+        cost: Number(data.cost),
+        created_at: moment().format("YYYY-MM-DD hh:mm:ss")
+      }
+      this.addDiary(params);
     },
     formatRupiah,
   },
