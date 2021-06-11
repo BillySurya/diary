@@ -6,6 +6,13 @@
       <div>
         <button @click="showModal = true">TAMBAH ITEM</button>
       </div>
+      <div class="text-center mt--md">
+        <select v-model="month_select">
+          <option v-for="(month, index) in monthList" :key="index">
+            {{ month }}
+          </option>
+        </select>
+      </div>
     </div>
     <div>
       <div v-for="(list, listKey, idx) in listData"  :key="idx">
@@ -51,6 +58,8 @@ export default {
       listData: {},
       loading: true,
       totalCostItemPerDay: {},
+      month_select: 'Jan',
+      monthList: moment.monthsShort()
     };
   },
   computed: {
