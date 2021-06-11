@@ -1,12 +1,12 @@
 <template>
-  <div v-if="!loading">
+  <div>
     <div>
-      <span>Diari Jajan Bulan {{ itemList.data[0].created_at | moment('MM')}} 2021</span>
+      <span>Diari Jajan Bulan {{ month_select }} 2021</span>
       <small>Pengeluaran Bulan Ini {{ calculateTotalCostPerMonth() | formatRupiah }} </small>
       <div>
         <button @click="showModal = true">TAMBAH ITEM</button>
       </div>
-      <div class="text-center mt--md">
+      <div>
         <select v-model="month_select">
           <option v-for="(month, index) in monthList" :key="index">
             {{ month }}
@@ -14,8 +14,8 @@
         </select>
       </div>
     </div>
-    <div>
-      <div v-for="(list, listKey, idx) in listData"  :key="idx">
+    <div v-if="!loading">
+      <div v-for="(list, listKey, idx) in listData" :key="idx">
         <div>
           <b>{{ Number(listKey) | moment("DD MMMM") }}</b>
         </div>
@@ -72,18 +72,20 @@ export default {
       getItemList: "getItemList",
       addDiary: "addDiary",
     }),
-    reformatData(item) {
+    reformatData(item, month) {
       let diaryListData = [...item];
       let _data = {};
       diaryListData.sort((a,b) => new Date(b['created_at']).getTime() - new Date(a['created_at']).getTime());
 
       diaryListData.forEach((el) => {
-        let dateTimeItem = el.created_at.split(" ");
-        let dateMillis = new Date(dateTimeItem[0]).getTime();
-        if (!Object.prototype.hasOwnProperty.call(_data, dateMillis))
-          _data[dateMillis] = [];
+        if(moment(el.created_at).format('MMM') == month){
+          let dateTimeItem = el.created_at.split(" ");
+          let dateMillis = new Date(dateTimeItem[0]).getTime();
+          if (!Object.prototype.hasOwnProperty.call(_data, dateMillis))
+            _data[dateMillis] = [];
 
-        _data[dateMillis].push(el);
+          _data[dateMillis].push(el);
+        }
       });
 
       Object.keys(_data).forEach(i=>{
@@ -94,6 +96,8 @@ export default {
       this.loading = Object.keys(this.listData).length ? false : true;
     },
     getTotalCost() {
+      if(!Object.keys(this.listData).length) this.totalCostItemPerDay = this.listData
+
       Object.keys(this.listData).forEach((key) => {
         this.totalCostItemPerDay[key] = this.listData[key].reduce((n, {cost}) => n + cost, 0);
       });
@@ -126,13 +130,17 @@ export default {
      itemList: {
       deep: true,
       handler(res) {
-        if(res.data) {
-          this.reformatData(res.data);
+        if (res.data) {
+          this.reformatData(res.data, this.month_select);
           this.getTotalCost();
         }
-        return false
-      }
+        return false;
+      },
+    },
+    month_select(data) {
+      this.reformatData(this.itemList.data, data);
+      this.getTotalCost();
     }
-  }
+  },
 };
 </script>
