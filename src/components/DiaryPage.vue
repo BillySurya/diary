@@ -4,7 +4,7 @@
       <span>Diari Jajan Bulan {{ month_select }} 2021</span>
       <small>Pengeluaran Bulan Ini {{ calculateTotalCostPerMonth() | formatRupiah }} </small>
       <div>
-        <button @click="showModal = true">TAMBAH ITEM</button>
+        <button @click="showModal = true" :disabled="!isCurrentMonth">TAMBAH ITEM</button>
       </div>
       <div>
         <select v-model="month_select">
@@ -58,8 +58,9 @@ export default {
       listData: {},
       loading: true,
       totalCostItemPerDay: {},
-      month_select: 'Jan',
-      monthList: moment.monthsShort()
+      month_select: '',
+      monthList: moment.monthsShort(),
+      isCurrentMonth: false,
     };
   },
   computed: {
@@ -120,11 +121,16 @@ export default {
         created_at: moment().format("YYYY-MM-DD hh:mm:ss")
       }
       this.addDiary(params);
+      this.closeModal();
+    },
+    checkCurrentMonth() {
+      this.isCurrentMonth = this.month_select === moment().format('MMM')
     },
     formatRupiah,
   },
   created() {
     this.getItemList();
+    this.month_select = moment().format('MMM');
   },
   watch: {
      itemList: {
@@ -133,6 +139,7 @@ export default {
         if (res.data) {
           this.reformatData(res.data, this.month_select);
           this.getTotalCost();
+          this.checkCurrentMonth();
         }
         return false;
       },
@@ -140,6 +147,7 @@ export default {
     month_select(data) {
       this.reformatData(this.itemList.data, data);
       this.getTotalCost();
+      this.checkCurrentMonth();
     }
   },
 };
