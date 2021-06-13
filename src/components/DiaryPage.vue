@@ -8,7 +8,9 @@
       <div>
         <button
           :class="`my-2 ${
-            isCurrentMonth ? 'text-white rounded-md py-2 px-3 cursor-pointer border-none bg-purple-900' : 'text-black rounded-md py-2 px-3 cursor-auto bg-gray-200'
+            isCurrentMonth
+              ? 'text-white rounded-md py-2 px-3 cursor-pointer border-none bg-purple-900'
+              : 'text-black rounded-md py-2 px-3 cursor-auto bg-gray-200'
           }`"
           @click="showModal = true"
           :disabled="!isCurrentMonth"
@@ -17,7 +19,10 @@
         </button>
       </div>
       <div class="text-center mt-2">
-        <select class="p-2 rounded-md bg-transparent border border-black" v-model="month_select">
+        <select
+          class="p-2 rounded-md bg-transparent border border-black"
+          v-model="month_select"
+        >
           <option v-for="(month, index) in monthList" :key="index">
             {{ month }}
           </option>
@@ -38,13 +43,34 @@
           class="flex justify-start border-b px-2 py-1"
           :key="itemIdx"
         >
-          <span class="whitespace-nowrap overflow-hidden overflow-ellipsis pr-2">{{ item.created_at | moment("HH:mm") }} </span>
-          <span class="whitespace-nowrap overflow-hidden overflow-ellipsis mr-auto w-24">{{ item.name }} </span>
-          <span class="whitespace-nowrap overflow-hidden overflow-ellipsis w-24 text-right">{{ item.cost | formatRupiah }}</span>
+          <span class="whitespace-nowrap overflow-hidden overflow-ellipsis pr-2"
+            >{{ item.created_at | moment("HH:mm") }}
+          </span>
+          <span
+            class="
+              whitespace-nowrap
+              overflow-hidden overflow-ellipsis
+              mr-auto
+              w-24
+            "
+            >{{ item.name }}
+          </span>
+          <span
+            class="
+              whitespace-nowrap
+              overflow-hidden overflow-ellipsis
+              w-24
+              text-right
+            "
+            >{{ item.cost | formatRupiah }}</span
+          >
         </div>
         <div class="flex justify-end border-gray-400 border-t pt-2 px-2">
-          <b> Total
-            <span class="pl-4">{{ totalCostItemPerDay[listKey] | formatRupiah }}</span>
+          <b>
+            Total
+            <span class="pl-4">{{
+              totalCostItemPerDay[listKey] | formatRupiah
+            }}</span>
           </b>
         </div>
         <br />
@@ -161,7 +187,7 @@ export default {
     this.month_select = moment().format("MMM");
   },
   watch: {
-     itemList: {
+    itemList: {
       deep: true,
       handler(res) {
         if (res.data) {

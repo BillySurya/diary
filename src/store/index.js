@@ -13,7 +13,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setItemData(state, item) {
-      Vue.set(state.item, 'data', item);
+      Vue.set(state.item, "data", item);
     },
     setAddedItem(state, response) {
       state.item.data.push(response);

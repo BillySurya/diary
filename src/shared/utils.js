@@ -1,5 +1,5 @@
-export function formatNumber (val) {
-  return val.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')
+export function formatNumber(val) {
+  return val.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 }
 
 /**
@@ -8,7 +8,7 @@ export function formatNumber (val) {
  * @param  {String} concat
  * @return {String}
  */
-export function formatRupiah (val, concat = 'Rp ') {
-  val = concat + formatNumber(val)
-  return val
+export function formatRupiah(val, concat = "Rp ") {
+  val = concat + formatNumber(val);
+  return val;
 }
